@@ -1,7 +1,7 @@
 module.exports = {
     lintOnSave: false,
 
-    publicPath: '/dev/LIR',
+    publicPath: '/dev/miss',
     //baseUrl: '/demo/slideKenoV1',
     productionSourceMap: false
 }

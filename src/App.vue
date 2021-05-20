@@ -2,7 +2,7 @@
   <div class="fullScreen" :style="bgImg">
     <div
       v-if="!option.invisibleSim"
-      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%"
     >
       <pay-table
         v-show="!stage.placeCards"
@@ -66,7 +66,7 @@
       >
         <div v-if="r.payout > 0" class="mainCards">
           <div class="cSize" :class="[cPos[cardNum]]">
-            <div style="padding-top:0%; margin:0 auto; cursor:pointer;">
+            <div style="padding-top: 0%; margin: 0 auto; cursor: pointer">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 130">
                 <rect
                   :style="{ fill: r.fill }"
@@ -92,41 +92,19 @@
           </div>
         </div>
       </div>
-
-      <!--       <div
-        v-show="stage.placeCards"
-        class="placeCardTop"
-        style="position:absolute; width: 100%"
-      >
-        <place-card
-          v-bind:cardOnTable="cardOnTableToPlace"
-          v-bind:placePossible="placePossible"
-        ></place-card>
-      </div> -->
-      <!-- 
-      <div
-        id="singleResult"
-        v-for="(r, i) in checkStageResult(results, 0, 3)"
-        :key="i + 'Hresult'"
-        :class="{
-          resultArea: i === 0,
-          resultArea2: i === 1,
-          resultArea3: i === 2,
-        }"
-      >
-        <result-lable v-bind:r="r" />
-      </div> -->
-
       <div
         id="dealOrRide"
         class="topBtn"
         :style="{
           display:
-            stage.newRound || stage.ride1 || stage.ride2 ? 'block' : 'none',
+            stage.newRound || stage.ride1 || stage.ride2 || stage.ride3
+              ? 'block'
+              : 'none',
         }"
       >
-        <div class="topBtnBox" v-on:click="mainBtn()">
+        <div class="topBtnBox">
           <btn-right
+            v-on:deal="mainBtn"
             v-bind:specs="{
               clr: 'red',
               label: stage.newRound ? 'DEAL' : 'RIDE',
@@ -138,7 +116,7 @@
         id="pull"
         class="bottomBtn"
         :style="{
-          display: stage.ride1 || stage.ride2 ? 'block' : 'none',
+          display: stage.ride1 || stage.ride2 || stage.ride3 ? 'block' : 'none',
         }"
       >
         <div class="bottomBtnBox" v-on:click="pull()">
@@ -165,7 +143,13 @@
         <button
           v-show="!simulationGoing && !option.simScript"
           @click="settingsOpen = false"
-          style="position: absolute; right: 0.5em; top: 0.5em; width: 2em; height: 2em;"
+          style="
+            position: absolute;
+            right: 0.5em;
+            top: 0.5em;
+            width: 2em;
+            height: 2em;
+          "
         >
           X
         </button>
@@ -174,8 +158,9 @@
             v-for="(o, i) in testScenarios"
             :value="i"
             v-bind:key="i + 'primeSet'"
-            >{{ o.desc }}</option
           >
+            {{ o.desc }}
+          </option>
         </select>
         <!--   <div v-if="!option.invisibleSim && !option.simScript">
         
@@ -263,7 +248,13 @@
       <div class="topInfoBox">
         <button
           @click="statsOpen = false"
-          style="position: absolute; right: 0.5em; top: 0.5em; width: 2em; height: 2em;"
+          style="
+            position: absolute;
+            right: 0.5em;
+            top: 0.5em;
+            width: 2em;
+            height: 2em;
+          "
         >
           X
         </button>
@@ -286,7 +277,7 @@
           }}%
         </p>
 
-        <table class="statsTbl" style="border-style:solid; border-width:1">
+        <table class="statsTbl" style="border-style: solid; border-width: 1">
           <tr>
             <th>Hand</th>
             <th>Reward</th>
@@ -334,17 +325,37 @@
     <div
       v-if="
         option.bestPlace &&
-          stage.placeCards &&
-          !option.invisibleSim &&
-          !option.autoPlay
+        stage.placeCards &&
+        !option.invisibleSim &&
+        !option.autoPlay
       "
-      style="position:absolute; bottom:0.5%; left: 20.5rem; font-size:1rem; cursor: pointer; color: lightyellow; background:  rgba(0, 0, 0, 0.5); padding: 0.5rem; padding-bottom: 0rem; "
+      style="
+        position: absolute;
+        bottom: 0.5%;
+        left: 20.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        color: lightyellow;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 0.5rem;
+        padding-bottom: 0rem;
+      "
     >
       <b>Best place highlighted!</b>
     </div>
     <div
       v-if="!statsOpen && option.showRTPStats"
-      style="position:absolute; bottom:0.5%; right: 3rem; font-size:1rem; cursor: pointer; color: lightyellow; background:  rgba(0, 0, 0, 0.5); padding: 0.5rem; padding-bottom: 0rem; "
+      style="
+        position: absolute;
+        bottom: 0.5%;
+        right: 3rem;
+        font-size: 1rem;
+        cursor: pointer;
+        color: lightyellow;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 0.5rem;
+        padding-bottom: 0rem;
+      "
     >
       RTP:
       <b>{{ getRTP() }}%</b>
@@ -353,18 +364,28 @@
     <div
       v-if="
         option.bestTrade &&
-          stage.pickTrade &&
-          !option.invisibleSim &&
-          !option.autoPlay
+        stage.pickTrade &&
+        !option.invisibleSim &&
+        !option.autoPlay
       "
-      style="position:absolute; bottom:0.5%; left: 20.5rem; font-size:1rem; cursor: pointer; color: lightyellow; background:  rgba(0, 0, 0, 0.5); padding: 0.5rem; padding-bottom: 0rem; "
+      style="
+        position: absolute;
+        bottom: 0.5%;
+        left: 20.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        color: lightyellow;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 0.5rem;
+        padding-bottom: 0rem;
+      "
     >
       <b>{{ autoTradeMsg }}</b>
     </div>
 
     <!-- ENDF TEST FILEDS -->
 
-    <div style="display:none;">
+    <div style="display: none">
       <audio id="soundFlip">
         <source
           src="/static/sounds/cardFlip.mp3"
@@ -562,6 +583,7 @@ export default {
         roundEnds: false,
         ride1: false,
         ride2: false,
+        ride3: false,
       },
       /*  MDIndex: -1, */
       cash: {
@@ -629,7 +651,7 @@ export default {
       this.cash.betsHeld--;
       this.mainBtn();
     },
-    formatNumber: function(value) {
+    formatNumber: function (value) {
       return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     toggleAutoplay() {
@@ -720,13 +742,15 @@ export default {
       this.infoBoxOpen = true;
       document.getElementById("infoFrame").style.zIndex = "1";
     },
-    mainBtn() {
+    mainBtn(d) {
       if (this.stage.newRound) {
         this.deal();
       } else if (this.stage.ride1) {
         this.ride1();
-      } else {
+      } else if (this.stage.ride2) {
         this.ride2();
+      } else {
+        this.ride3();
       }
     },
     ride1() {
@@ -752,6 +776,19 @@ export default {
         cardsToFlip
       );
     },
+    ride3() {
+      console.log("to do: ride 3");
+      /*       this.stage.ride2 = false;
+      var cardsToFlip = [];
+      for (let i = 0; i < this.cash.hands; i++) {
+        cardsToFlip.push(i);
+      }
+
+      this.flipFinalCards(
+        this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300,
+        cardsToFlip
+      ); */
+    },
     dealFinalCards() {
       //var cardsToFlip = [];
       for (let i = 0; i < this.cash.hands; i++) {
@@ -769,7 +806,7 @@ export default {
                   : this.option.turboSpeed
                   ? 30
                   : 300,
-                [0, 1, 2],
+                [0, 1],
                 1
               );
 
@@ -912,18 +949,6 @@ export default {
                   : i * 200
               );
             }
-
-            /*  if (i === 2) {
-              this.flipPrimaryCards(
-                this.option.invisibleSim
-                  ? 0
-                  : this.option.turboSpeed
-                  ? 30
-                  : 300,
-                [0, 1, 2],
-                1
-              );
-            } */
           },
           this.option.invisibleSim
             ? 0
@@ -939,10 +964,6 @@ export default {
       for (var j = 0; j < 4; j++) {
         cards.push(this.primaryCards.specs[j]);
       }
-      /*     this.primaryCards.specs.forEach((s) => {
-        cards.push(s);
-      });
- */
       var result = finalResults.fiveCards(cards);
       if (result.payout > 0) {
         result.win =
@@ -1036,8 +1057,11 @@ export default {
                 () => {
                   if (rideNum === 1) {
                     this.stage.ride1 = true;
+                    console.log('ride 1');
                   } else if (rideNum === 2) {
                     this.stage.ride2 = true;
+                  } else if (rideNum === 3) {
+                    this.stage.ride3 = true;
                   }
                 },
                 this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300

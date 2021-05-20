@@ -1,7 +1,7 @@
 <template>
   <div class="logo">
     <!--    <img class="logoImg" src="../assets/MissPoker.svg" /> -->
-    <img class="logoImg" src="../assets/LIR.svg" />
+    <img class="logoImg" src="../assets/miss.svg" />
   </div>
 </template>
 
