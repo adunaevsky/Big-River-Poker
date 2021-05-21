@@ -104,7 +104,7 @@
       >
         <div class="topBtnBox">
           <btn-right
-            v-on:deal="mainBtn"
+            v-on:play="mainBtn"
             v-bind:specs="{
               clr: 'red',
               label: stage.newRound ? 'DEAL' : 'RIDE',
@@ -113,17 +113,17 @@
         </div>
       </div>
       <div
-        id="pull"
+        id="fold"
         class="bottomBtn"
         :style="{
           display: stage.ride1 || stage.ride2 || stage.ride3 ? 'block' : 'none',
         }"
       >
-        <div class="bottomBtnBox" v-on:click="pull()">
+        <div class="bottomBtnBox" v-on:click="fold()">
           <btn-right
             v-bind:specs="{
               clr: 'green',
-              label: 'PULL',
+              label: 'FOLD',
             }"
           ></btn-right>
         </div>
@@ -595,7 +595,8 @@ export default {
         coinValue: 1, // changes as active coin option changes.
         coinOptions: [1, 2, 5, 10, 20], // options
         activeCoinOption: 0, //selected option
-        betsHeld: 3,
+        //  betsHeld: 3,
+        multiplyFactor: [1, 0, 0, 0],
       },
       holdReason: "",
       primaryCards: {
@@ -647,9 +648,9 @@ export default {
     },
   }, */
   methods: {
-    pull() {
-      this.cash.betsHeld--;
-      this.mainBtn();
+    fold() {
+      // this.cash.betsHeld--;
+      this.mainBtn(0);
     },
     formatNumber: function (value) {
       return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -742,52 +743,46 @@ export default {
       this.infoBoxOpen = true;
       document.getElementById("infoFrame").style.zIndex = "1";
     },
-    mainBtn(d) {
+    mainBtn(multiplyFactor) {
       if (this.stage.newRound) {
         this.deal();
       } else if (this.stage.ride1) {
-        this.ride1();
+       // console.log("ride 1");
+        this.ride1(multiplyFactor);
       } else if (this.stage.ride2) {
-        this.ride2();
+       // console.log("ride 2");
+        this.ride2(multiplyFactor);
       } else {
-        this.ride3();
+       // console.log("ride 3");
+        this.ride3(multiplyFactor);
       }
     },
-    ride1() {
+    ride1(n) {
       this.stage.ride1 = false;
-      this.primaryCards.deal.splice(3, 1, true);
-      this.playDealSound();
-
+      this.cash.multiplyFactor[1] = n;
       this.flipPrimaryCards(
         this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300,
-        [3],
+        [, , 2],
         2
       );
     },
-    ride2() {
+    ride2(n) {
       this.stage.ride2 = false;
-      var cardsToFlip = [];
-      for (let i = 0; i < this.cash.hands; i++) {
-        cardsToFlip.push(i);
-      }
-
-      this.flipFinalCards(
+      this.cash.multiplyFactor[2] = n;
+      this.flipPrimaryCards(
         this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300,
-        cardsToFlip
+        [, , , 3],
+        3
       );
     },
-    ride3() {
-      console.log("to do: ride 3");
-      /*       this.stage.ride2 = false;
-      var cardsToFlip = [];
-      for (let i = 0; i < this.cash.hands; i++) {
-        cardsToFlip.push(i);
-      }
-
-      this.flipFinalCards(
+    ride3(n) {
+      this.stage.ride3 = false;
+      this.cash.multiplyFactor[3] = n;
+      this.flipPrimaryCards(
         this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300,
-        cardsToFlip
-      ); */
+        [, , , , 4],
+        4
+      );
     },
     dealFinalCards() {
       //var cardsToFlip = [];
@@ -893,8 +888,13 @@ export default {
           this.dealPrimaryCards();
         }
 
-        this.cash.totalBet =
-          this.cash.betsHeld * this.cash.coinValue * this.cash.hands;
+        var betPerHandTotal = 0;
+        this.cash.multiplyFactor.forEach((v) => {
+          betPerHandTotal += v * this.cash.coinValue;
+        });
+
+        this.cash.totalBet = betPerHandTotal * this.cash.hands;
+
         this.cash.balance = this.cash.balance - this.cash.totalBet;
         this.RTP.totalBet += this.cash.totalBet;
         this.RTP.round++;
@@ -966,9 +966,14 @@ export default {
       }
       var result = finalResults.fiveCards(cards);
       if (result.payout > 0) {
+        var betPerHandTotal = 0;
+        this.cash.multiplyFactor.forEach((v) => {
+          betPerHandTotal += v * this.cash.coinValue;
+        });
+
         result.win =
-          result.payout * this.cash.betsHeld * this.cash.coinValue +
-          this.cash.betsHeld * this.cash.coinValue;
+          result.payout * betPerHandTotal * this.cash.coinValue +
+          betPerHandTotal * this.cash.coinValue;
       }
       this.results.push(result);
 
@@ -1023,7 +1028,8 @@ export default {
       this.dCards.specs = [];
       this.dCards.deal = [];
       this.dCards.flip = [];
-      this.cash.betsHeld = 3;
+      //   this.cash.betsHeld = 3;
+      this.cash.multiplyFactor = [1, 0, 0, 0];
 
       this.soundClearCards.play();
 
@@ -1040,37 +1046,62 @@ export default {
     },
     flipPrimaryCards(initialDelay, cards, rideNum) {
       cards.forEach((c, i, a) => {
-        if (i <= a.length - 1) {
-          bus.emit("cardsUpdated", {
-            newCard: this.primaryCards.specs[c],
-            cardNum: c,
-            cardType: "cards",
-          });
+        if (typeof c === "number") {
+          if (i <= a.length - 1) {
+            bus.emit("cardsUpdated", {
+              newCard: this.primaryCards.specs[c],
+              cardNum: c,
+              cardType: "cards",
+            });
 
-          setTimeout(() => {
-            this.primaryCards.flip.splice(c, 1, true);
-            this.playFlipSound();
-            if (i === a.length - 1) {
-              //  this.prepDCards();
+            setTimeout(() => {
+              this.primaryCards.flip.splice(c, 1, true);
+              this.playFlipSound();
+              if (i === a.length - 1) {
+                //  this.prepDCards();
 
-              setTimeout(
-                () => {
-                  if (rideNum === 1) {
-                    this.stage.ride1 = true;
-                    console.log('ride 1');
-                  } else if (rideNum === 2) {
-                    this.stage.ride2 = true;
-                  } else if (rideNum === 3) {
-                    this.stage.ride3 = true;
-                  }
-                },
-                this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300
-              );
-            }
-          }, initialDelay);
-          initialDelay =
-            initialDelay +
-            (this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 100);
+                setTimeout(
+                  () => {
+                    if (rideNum === 1) {
+                      this.stage.ride1 = true;
+                    } else if (rideNum === 2) {
+                      this.stage.ride2 = true;
+                    } else if (rideNum === 3) {
+                      this.stage.ride3 = true;
+                    } else {
+                      //end game!
+
+                      var cardsToFlip = [];
+                      for (let i = 0; i < this.cash.hands; i++) {
+                        cardsToFlip.push(i);
+                      }
+
+                      this.flipFinalCards(
+                        this.option.invisibleSim
+                          ? 0
+                          : this.option.turboSpeed
+                          ? 30
+                          : 300,
+                        cardsToFlip
+                      );
+                    }
+                  },
+                  this.option.invisibleSim
+                    ? 0
+                    : this.option.turboSpeed
+                    ? 30
+                    : 300
+                );
+              }
+            }, initialDelay);
+            initialDelay =
+              initialDelay +
+              (this.option.invisibleSim
+                ? 0
+                : this.option.turboSpeed
+                ? 30
+                : 100);
+          }
         }
       });
     },

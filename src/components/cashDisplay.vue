@@ -3,7 +3,7 @@
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 80">
       <rect
         id="balanceBox"
-        style="fill:#231f20; stroke:#5b5b5b; stroke-miterlimit:10;"
+        style="fill: #231f20; stroke: #5b5b5b; stroke-miterlimit: 10"
         x="46"
         y="0.5"
         rx="2"
@@ -13,7 +13,7 @@
 
       <rect
         id="totalBetBox"
-        style="fill:#231f20; stroke:#5b5b5b; stroke-miterlimit:10;"
+        style="fill: #231f20; stroke: #5b5b5b; stroke-miterlimit: 10"
         x="46"
         y="12.5"
         rx="2"
@@ -23,7 +23,7 @@
 
       <rect
         id="winBox"
-        style="fill:#231f20; stroke:#5b5b5b; stroke-miterlimit:10;"
+        style="fill: #231f20; stroke: #5b5b5b; stroke-miterlimit: 10"
         x="46"
         y="24.5"
         rx="2"
@@ -33,7 +33,7 @@
 
       <rect
         id="b/hBox"
-        style="fill:#231f20; stroke:#5b5b5b; stroke-miterlimit:10;"
+        style="fill: #231f20; stroke: #5b5b5b; stroke-miterlimit: 10"
         x="46"
         y="36.5"
         rx="2"
@@ -44,7 +44,7 @@
       />
       <rect
         id="handsBox"
-        style="fill:#231f20; stroke:#5b5b5b; stroke-miterlimit:10;"
+        style="fill: #231f20; stroke: #5b5b5b; stroke-miterlimit: 10"
         x="63"
         y="48.5"
         rx="2"
@@ -100,7 +100,7 @@
         :class="{ pointer: glow && !lockBet }"
         @click="updateBet()"
       >
-        {{ dollarFormat(cash.betsHeld * cash.coinValue * cash.hands) }}
+        {{ totalBet }}
       </text>
 
       <text
@@ -144,14 +144,14 @@
         id="b/hVal"
         text-anchor="middle"
         font-weight="bold"
-        :font-size="cash.coinValue >= 10 ? '6.5' : '8'"
+        :font-size="cash.coinValue >= 10 ? '5' : '6'"
         x="73"
         :y="cash.coinValue >= 10 ? '43.5' : '44'"
         fill="#FEED07"
         opacity="1"
         @click="updateBet()"
       >
-        {{ getBetsView() }}
+        {{ betPerHand }}
       </text>
       <text
         id="handsVal"
@@ -195,19 +195,28 @@ export default {
       winDisplayed: 0,
     };
   },
-  methods: {
-    getBetsView() {
-      var moreText = "";
+  computed: {
+    totalBet() {
+      var betPerHandTotal = 0;
+      this.cash.multiplyFactor.forEach((v) => {
+        betPerHandTotal += v * this.cash.coinValue;
+      });
 
-      if (this.cash.betsHeld === 3) {
-        moreText =
-          " + " + "$" + this.cash.coinValue + " + " + "$" + this.cash.coinValue;
-      } else if (this.cash.betsHeld === 2) {
-        moreText = " + " + "$" + this.cash.coinValue;
-      }
-
-      return "$" + this.cash.coinValue + moreText;
+      return this.dollarFormat(
+        betPerHandTotal  * this.cash.hands
+      );
     },
+    betPerHand() {
+      var result = "";
+      var l = this.cash.multiplyFactor.length - 1;
+      this.cash.multiplyFactor.forEach((v, i) => {
+        var f = this.dollarFormat(v * this.cash.coinValue);
+        result += f + (i === l ? "" : " + ");
+      });
+      return result;
+    },
+  },
+  methods: {
     updateHands() {
       if (this.glow && !this.lockBet) {
         this.$emit("updateHands");
@@ -218,7 +227,7 @@ export default {
         this.$emit("updateBet");
       }
     },
-    dollarFormat: function(x) {
+    dollarFormat: function (x) {
       if (x === "") {
         return x;
       }
@@ -264,7 +273,7 @@ export default {
   },
 
   watch: {
-    "cash.win": function() {
+    "cash.win": function () {
       this.updateDisplay();
     },
   },

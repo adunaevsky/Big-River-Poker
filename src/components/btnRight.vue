@@ -8,7 +8,7 @@
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 175.4 185"
   >
-    <g v-if="specs.label === 'DEAL' || specs.label === 'PULL'">
+    <g v-if="specs.label === 'DEAL' || specs.label === 'FOLD'">
       <rect
         class="sideBtn"
         style="stroke: #fff; stroke-width: 6; opacity: 1"
@@ -61,139 +61,113 @@
     </g>
 
     <g v-else>
-
-      <g   class="sideBtn">
-
-  <rect
-       c
-        style="stroke: #fff; stroke-width: 6; opacity: 1"
-        x="5"
-        y="5"
-        width="800.4"
-        height="65"
-        rx="35"
-        ry="35"
-      />
-
-
- <!--      <circle
-      
-        cx="40"
-        cy="40"
-        r="37"
-        stroke="black"
-        stroke-width="3"
-        fill="red"
-        
-        @click="ride(1)"
-        
-        style="stroke: #fff; stroke-width: 6; opacity: 1"
-      /> -->
-      <text
-        class="sideBtn"
-        style="opacity: 0.8"
-        text-anchor="middle"
-        font-weight="bold"
-        font-size="40"
-        x="50"
-        y="50"
-        fill="#fff"
-        @click="ride(1)"
-      >
-        1x
-      </text>
- <!--      <circle
-      
-        cx="130"
-        cy="40"
-        r="37"
-        stroke="black"
-        stroke-width="3"
-        class="sideBtn"
-        
-        style="stroke: #fff; stroke-width: 6; opacity: 1"
-        @click="ride(2)"
-      /> -->
-
-
+      <g class="sideBtn">
         <rect
-       c
-        style="stroke: #fff; stroke-width: 6; opacity: 1"
-        x="85"
-        y="5"
-        width="800.4"
-        height="65"
-        rx="35"
-        ry="35"
-      />
+          c
+          style="stroke: #fff; stroke-width: 6; opacity: 1"
+          x="5"
+          y="5"
+          width="800.4"
+          height="65"
+          rx="35"
+          ry="35"
+          @click="ride(1)"
+        />
+        <text
+          class="sideBtn"
+          style="opacity: 0.8"
+          text-anchor="middle"
+          font-weight="bold"
+          font-size="40"
+          x="50"
+          y="50"
+          fill="#fff"
+          @click="ride(1)"
+        >
+          1x
+        </text>
+        <rect
+          style="stroke: #fff; stroke-width: 6; opacity: 1"
+          x="85"
+          y="5"
+          width="800.4"
+          height="65"
+          rx="35"
+          ry="35"
+          @click="ride(2)"
+        />
 
-      <text
-        class="sideBtn"
-        style="opacity: 0.8"
-        text-anchor="middle"
-        font-weight="bold"
-        font-size="40"
-        x="125"
-        y="50"
-        fill="#fff"
-        @click="ride(2)"
-      >
-        2x
-      </text>
-<!-- 
-      <circle
-      
-        cx="130"
-        cy="40"
-        r="40"
-        stroke="black"
-        stroke-width="3"
-        fill="red"
-        
-        style="stroke: #fff; stroke-width: 6; opacity: 1"
-        @click="ride(2)"
-      /> -->
-         <rect
-       c
-        style="stroke: #fff; stroke-width: 6; opacity: 1"
-        x="10"
-        y="80"
-        width="800.4"
-        height="90"
-        rx="55"
-        ry="55"
-      />
-      <text
-        class="sideBtn"
-        style="opacity: 0.8"
-        text-anchor="middle"
-        font-weight="bold"
-        font-size="80"
-        x="95"
-        y="150"
-        fill="#fff"
-        @click="ride(2)"
-      >
-        3x
-      </text>
-
-   
-
-
-
-
-
-
-</g>
+        <text
+          class="sideBtn"
+          style="opacity: 0.8"
+          text-anchor="middle"
+          font-weight="bold"
+          font-size="40"
+          x="125"
+          y="50"
+          fill="#fff"
+          @click="ride(2)"
+        >
+          2x
+        </text>
+        <rect
+          style="stroke: #fff; stroke-width: 6; opacity: 1"
+          x="10"
+          y="80"
+          width="800.4"
+          height="90"
+          rx="55"
+          ry="55"
+          @click="ride(3)"
+        />
+        <text
+          class="sideBtn"
+          style="opacity: 0.8"
+          text-anchor="middle"
+          font-weight="bold"
+          font-size="80"
+          x="95"
+          y="150"
+          fill="#fff"
+          @click="ride(3)"
+        >
+          3x
+        </text>
+      </g>
       <rect
         class="bottomBtn"
         style="stroke: #fff; stroke-width: 6; opacity: 0.8"
         x="30"
         y="10"
-        width="140"
+        width="60"
         height="370"
-        rx="70"
-        ry="70"
+        rx="30"
+        ry="30"
+        @click="ride(3)"
+      />
+      <text
+        class="bottomBtn"
+        style="opacity: 0.8"
+        text-anchor="middle"
+        font-weight="bold"
+        font-size="30"
+        x="60"
+        y="75"
+        fill="#fff"
+        @click="ride(3)"
+      >
+        3x
+      </text>
+
+      <rect
+        class="bottomBtn"
+        style="stroke: #fff; stroke-width: 6; opacity: 0.8"
+        x="100"
+        y="10"
+        width="60"
+        height="370"
+        rx="30"
+        ry="30"
         @click="ride(1)"
       />
       <text
@@ -202,12 +176,37 @@
         text-anchor="middle"
         font-weight="bold"
         font-size="30"
-        x="100"
-        y="75"
+        x="130"
+        y="55"
         fill="#fff"
         @click="ride(1)"
       >
-        {{ specs.label }} B
+        1x
+      </text>
+
+      <rect
+        class="bottomBtn"
+        style="stroke: #fff; stroke-width: 6; opacity: 0.8"
+        x="100"
+        y="70"
+        width="60"
+        height="370"
+        rx="30"
+        ry="30"
+        @click="ride(2)"
+      />
+      <text
+        class="bottomBtn"
+        style="opacity: 0.8"
+        text-anchor="middle"
+        font-weight="bold"
+        font-size="30"
+        x="130"
+        y="115"
+        fill="#fff"
+        @click="ride(2)"
+      >
+        2x
       </text>
     </g>
   </svg>
@@ -219,10 +218,11 @@ export default {
   props: ["specs"],
   methods: {
     deal() {
-      this.$emit("deal", 0);
+      this.$emit("play", 0);
     },
     ride(n) {
-      console.log("ride", n, "got me!!!");
+      this.$emit("play", n);
+      //console.log("ride", n, "got me!!!");
     },
   },
 };
