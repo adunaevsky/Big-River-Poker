@@ -91,6 +91,33 @@
             </div>
           </div>
         </div>
+        <div v-else-if="stage.fold" class="mainCards">
+          <div class="cSize" :class="[cPos[cardNum]]">
+            <div style="padding-top: 0%; margin: 0 auto; cursor: pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 130">
+                <rect
+                  :style="{ fill: r.fill }"
+                  x="4"
+                  y="70"
+                  rx="0"
+                  width="82"
+                  height="25"
+                />
+                <text
+                  x="46"
+                  y="91"
+                  fill="#FFFFFF"
+                  text-anchor="middle"
+                  font-weight="bold"
+                  font-size="20"
+                  class="winValueLabel"
+                >
+                 No Win
+                </text>
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
       <div
         id="dealOrRide"
@@ -869,15 +896,34 @@ export default {
                 if (!this.stage.fold) {
                   this.analyzeResults(this.dCards.specs[c], i);
                 } else {
-                  console.log('analyze fold here!');
+                  //FOLD case
+                  this.results.push({
+                    rank: 0,
+                    label: "No Win",
+                    payout: 0,
+                    fill: "#424242",
+                  });
+                  if(i === 4){
+                    this.endRound()
+                  }
                 }
               },
-              this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300
+              this.option.invisibleSim
+                ? 0
+                : this.option.turboSpeed
+                ? 30
+                : 300
             );
           }, initialDelay);
           initialDelay =
             initialDelay +
-            (this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 900);
+            (this.option.invisibleSim
+              ? 0
+              : this.option.turboSpeed
+              ? 30
+              : this.stage.fold
+              ? 500
+              : 900);
         }
       });
     },
@@ -1006,6 +1052,7 @@ export default {
           result.payout * betPerHandTotal * this.cash.coinValue +
           betPerHandTotal * this.cash.coinValue;
       }
+    //  console.log(result);
       this.results.push(result);
 
       if (i === this.cash.hands - 1) {
