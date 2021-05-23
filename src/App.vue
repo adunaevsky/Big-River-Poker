@@ -584,6 +584,7 @@ export default {
         ride1: false,
         ride2: false,
         ride3: false,
+        fold: false,
       },
       /*  MDIndex: -1, */
       cash: {
@@ -649,8 +650,27 @@ export default {
   }, */
   methods: {
     fold() {
-      // this.cash.betsHeld--;
-      this.mainBtn(0);
+      this.stage.fold = true;
+
+      if (this.stage.ride1) {
+        console.log("case 1");
+        this.flipPrimaryCards(
+          this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300,
+          [, , 2, 3, 4]
+        );
+      } else if (this.stage.ride2) {
+        console.log("case 2");
+        this.flipPrimaryCards(
+          this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300,
+          [, , , 3, 4]
+        );
+      } else {
+        console.log("case 3");
+        this.flipPrimaryCards(
+          this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300,
+          [, , , , 4]
+        );
+      }
     },
     formatNumber: function (value) {
       return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -747,19 +767,20 @@ export default {
       if (this.stage.newRound) {
         this.deal();
       } else if (this.stage.ride1) {
-       // console.log("ride 1");
+        // console.log("ride 1");
         this.ride1(multiplyFactor);
       } else if (this.stage.ride2) {
-       // console.log("ride 2");
+        // console.log("ride 2");
         this.ride2(multiplyFactor);
       } else {
-       // console.log("ride 3");
+        // console.log("ride 3");
         this.ride3(multiplyFactor);
       }
     },
     ride1(n) {
       this.stage.ride1 = false;
       this.cash.multiplyFactor[1] = n;
+      this.payForPlay(n);
       this.flipPrimaryCards(
         this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300,
         [, , 2],
@@ -769,6 +790,7 @@ export default {
     ride2(n) {
       this.stage.ride2 = false;
       this.cash.multiplyFactor[2] = n;
+      this.payForPlay(n);
       this.flipPrimaryCards(
         this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300,
         [, , , 3],
@@ -778,11 +800,16 @@ export default {
     ride3(n) {
       this.stage.ride3 = false;
       this.cash.multiplyFactor[3] = n;
+      this.payForPlay(n);
       this.flipPrimaryCards(
         this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300,
         [, , , , 4],
         4
       );
+    },
+    payForPlay(n) {
+      this.cash.balance =
+        this.cash.balance - n * this.cash.coinValue * this.cash.hands;
     },
     dealFinalCards() {
       //var cardsToFlip = [];
@@ -839,7 +866,11 @@ export default {
 
             setTimeout(
               () => {
-                this.analyzeResults(this.dCards.specs[c], i);
+                if (!this.stage.fold) {
+                  this.analyzeResults(this.dCards.specs[c], i);
+                } else {
+                  console.log('analyze fold here!');
+                }
               },
               this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300
             );
@@ -1043,6 +1074,7 @@ export default {
       this.showWater2 = true;
 
       this.cash.win = 0;
+      this.stage.fold = false;
     },
     flipPrimaryCards(initialDelay, cards, rideNum) {
       cards.forEach((c, i, a) => {
@@ -1062,29 +1094,7 @@ export default {
 
                 setTimeout(
                   () => {
-                    if (rideNum === 1) {
-                      this.stage.ride1 = true;
-                    } else if (rideNum === 2) {
-                      this.stage.ride2 = true;
-                    } else if (rideNum === 3) {
-                      this.stage.ride3 = true;
-                    } else {
-                      //end game!
-
-                      var cardsToFlip = [];
-                      for (let i = 0; i < this.cash.hands; i++) {
-                        cardsToFlip.push(i);
-                      }
-
-                      this.flipFinalCards(
-                        this.option.invisibleSim
-                          ? 0
-                          : this.option.turboSpeed
-                          ? 30
-                          : 300,
-                        cardsToFlip
-                      );
-                    }
+                    this.finishPrimaryCardFlip(rideNum);
                   },
                   this.option.invisibleSim
                     ? 0
@@ -1104,6 +1114,36 @@ export default {
           }
         }
       });
+    },
+    finishPrimaryCardFlip(rideNum) {
+      if (this.stage.fold) {
+        //end game!
+
+        this.startFinalCardsFlip();
+      } else {
+        if (rideNum === 1) {
+          this.stage.ride1 = true;
+        } else if (rideNum === 2) {
+          this.stage.ride2 = true;
+        } else if (rideNum === 3) {
+          this.stage.ride3 = true;
+        } else {
+          //end game!
+
+          this.startFinalCardsFlip();
+        }
+      }
+    },
+    startFinalCardsFlip() {
+      var cardsToFlip = [];
+      for (let i = 0; i < this.cash.hands; i++) {
+        cardsToFlip.push(i);
+      }
+
+      this.flipFinalCards(
+        this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300,
+        cardsToFlip
+      );
     },
     cycleBgImg() {
       setInterval(() => {

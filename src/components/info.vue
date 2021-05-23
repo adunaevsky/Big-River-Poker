@@ -21,21 +21,47 @@
             </p>
 
             <p class="pText">
-              Ride Poker is a multi-hand stud based poker game where the player
-              makes three equal wagers against a pay scale. The wagers include
-              making a mandatory ante and two optional "pull" or "ride" bets.
+              "Big River" Poker is a multi-hand stud base video poker game. Each
+              multi-hand played from the independent standard 52 – card deck.
             </p>
             <p class="pText">
-              Upon receiving the initial three card deal, the player my "pull"
-              their bet(s) which allows them to take it back, or they my "ride"
-              the bet by keeping it actively in the game. The pull and ride
-              decisions are made by the player after seeing the opening deal of
-              three cards and after seeing the fourth revealed card.
+              The player makes an ante bet per hand and receives: two community
+              cards face up, two community cards face down, and a single card
+              face down each dealt from separate decks for each of the
+              multi-hands.
+            </p>
+            <p class="pText">
+              The first two community cards are revealed and the player may
+              place a bet (x3, x2, x1) or fold.*
+            </p>
+            <p class="pText">
+              The next community card is revealed and the player once again may
+              place a bet (x3, x2, x1) or fold.
+            </p>
+            <p class="pText">
+              The final community card is revealed and gives the player a final
+              betting opportunity where they may place one final bet (x3, x2,
+              x1) or fold. The four community cards from a single deck are
+              shown. Once the final bet is made, each of the multi-hand cards
+              (each from its own individual deck of cards) will populate the
+              multi-hands.
+            </p>
+            <p class="pText">
+              *If the player folds, the bets are surrendered and the results of
+              the game are shown to the player. The player is folding the
+              opportunity to wager and win on the entire hand.
+            </p>
+            <p class="pText">
+              Five card multi-hands are formed by using all four of the
+              community hands as the first four cards in each hand and each
+              multi-hand card from its own individual deck are used to create
+              unique hand variations.
             </p>
             <p class="pText">
               Wins in the game are compared to a predetermined pay scale and are
               awarded to the player upon completion of the game.
             </p>
+
             <!-- Mississippi Stud RULES
               <p class="pText">
              Mississippi Stud is a multi-hand stud based poker game where the player makes an opening ante wager and additional raise bets as the game progresses. 
@@ -65,7 +91,7 @@
 
         <div v-if="tabs[2].active">
           <div class="textBox">
-            <p style="text-align:left; padding-left:10px;">
+            <p style="text-align: left; padding-left: 10px">
               Realize Gaming, LLC specializes in designing and inventing new
               video poker and slot game concepts. We are building a portfolio of
               gaming patents with the goal of licensing them to companies for
@@ -86,7 +112,7 @@
 
             <img
               src="http://www.realizegamingllc.com/static/RealizeLogo.jpg"
-              style="width:80%;"
+              style="width: 80%"
             />
           </div>
         </div>
@@ -157,14 +183,14 @@ export default {
   },
   beforeMount() {},
   methods: {
-    isLast: function(list, index) {
+    isLast: function (list, index) {
       return list.length - 1 === index ? false : true;
     },
-    closeBox: function() {
+    closeBox: function () {
       this.$emit("closeInfo");
       document.getElementById("infoFrame").style.zIndex = "-1";
     },
-    updateTabs: function(index) {
+    updateTabs: function (index) {
       this.tabs.forEach((t, i) => {
         t.active = i === index ? true : false;
       });
@@ -179,7 +205,7 @@ export default {
     }, */
   },
   watch: {
-    open: function() {
+    open: function () {
       if (this.open) {
         var w = window.innerWidth;
         var h = window.innerHeight;
