@@ -64,7 +64,7 @@
           cardArea: cardNum > 4,
         }"
       >
-        <div v-if="r.payout > -1" class="mainCards">
+        <div v-if="r.payout > -1 && !stage.fold" class="mainCards">
           <div class="cSize" :class="[cPos[cardNum]]">
             <div style="padding-top: 0%; margin: 0 auto; cursor: pointer">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 130">
@@ -85,7 +85,7 @@
                   font-size="25"
                   class="winValueLabel"
                 >
-                  {{r.payout === 0 ? 'PUSH' :'$' + r.win }}
+                  {{r.payout === 0 ? 'PUSH' : '$' + r.win }}
                 </text>
               </svg>
             </div>
@@ -146,7 +146,7 @@
           display: stage.ride1 || stage.ride2 || stage.ride3 ? 'block' : 'none',
         }"
       >
-        <div class="bottomBtnBox" v-on:click="fold()">
+        <div class="bottomBtnBox" v-on:click="fold">
           <btn-right
             v-bind:specs="{
               clr: 'green',
@@ -680,19 +680,17 @@ export default {
       this.stage.fold = true;
 
       if (this.stage.ride1) {
-        console.log("case 1");
+        
         this.flipPrimaryCards(
           this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300,
           [, , 2, 3, 4]
         );
       } else if (this.stage.ride2) {
-        console.log("case 2");
         this.flipPrimaryCards(
           this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300,
           [, , , 3, 4]
         );
       } else {
-        console.log("case 3");
         this.flipPrimaryCards(
           this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300,
           [, , , , 4]
@@ -928,10 +926,15 @@ export default {
       var totalwin = 0;
 
       this.results.forEach((r) => {
+       // console.log(r);
         if (r.payout > -1) {
           totalwin += r.win;
         }
       });
+      if(this.stage.fold){
+        totalwin = 0;
+      }
+//console.log(totalwin);
 
       this.stage.results = true;
       this.stage.newGame = true;
