@@ -21,13 +21,13 @@
         v-bind:showValue="stage.results || stage.showWin"
         v-bind:lockBet="false"
       ></cash-display>
-      <water-mark1
+<!--       <water-mark1
         :style="{ display: showWater2 ? 'block' : 'none' }"
       ></water-mark1>
       <water-mark2
         :style="{ display: showWater ? 'block' : 'none' }"
       ></water-mark2>
-      <water-mark3></water-mark3>
+      <water-mark3></water-mark3> -->
 
       <card
         v-for="(c, i) in primaryCards.deal"
@@ -578,8 +578,8 @@ export default {
         tradeCount: 0,
       },
       cardBack: "",
-      showWater: true,
-      showWater2: true,
+      showWater: false,
+      showWater2: false,
       bgImg: "background-image: url('./static/BBGG1.jpg')",
       bgImgs: ["1", "2", "3"],
       currentImg: 2,
