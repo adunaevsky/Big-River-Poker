@@ -118,7 +118,8 @@ function tbl(value, coinValue, id) {
             .attr('font-size', 18)
             .attr('text-anchor', 'end')
             .text((d) => {
-                return '$' + commaValue(d.reward * coinValue)
+                return commaValue(d.reward)
+              //  return '$' + commaValue(d.reward * coinValue)
             });
     });
 }

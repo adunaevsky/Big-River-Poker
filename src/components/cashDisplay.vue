@@ -100,7 +100,7 @@
         :class="{ pointer: glow && !lockBet }"
         @click="updateBet()"
       >
-        {{ totalBet }}
+        {{ dollarFormat(cash.totalBet) }}
       </text>
 
       <text
@@ -144,9 +144,9 @@
         id="b/hVal"
         text-anchor="middle"
         font-weight="bold"
-        :font-size="cash.coinValue >= 10 ? '5' : '6'"
+        :font-size="cash.coinValue >= 1 ? '5' : '6'"
         x="73"
-        :y="cash.coinValue >= 10 ? '43.5' : '44'"
+        :y="cash.coinValue >= 1 ? '43.5' : '44'"
         fill="#FEED07"
         opacity="1"
         @click="updateBet()"
@@ -196,7 +196,7 @@ export default {
     };
   },
   computed: {
-    totalBet() {
+/*     totalBet() {
       var betPerHandTotal = 0;
       this.cash.multiplyFactor.forEach((v) => {
         betPerHandTotal += v * this.cash.coinValue;
@@ -205,7 +205,7 @@ export default {
       return this.dollarFormat(
         betPerHandTotal  * this.cash.hands
       );
-    },
+    }, */
     betPerHand() {
       var result = "";
       var l = this.cash.multiplyFactor.length - 1;

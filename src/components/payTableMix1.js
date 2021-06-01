@@ -65,7 +65,7 @@ function table(value, coinValue, id) {
         .attr('text-anchor', 'end')
         .text((d) => {
 
-            return '$' + commaValue(d.reward * coinValue);
+            return /* '$' + */ commaValue(d.reward /* * coinValue */);
         });
 
 }

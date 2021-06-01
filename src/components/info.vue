@@ -125,9 +125,9 @@
 
             Game Statistics and analysis is found here:
             <a
-              href="https://wizardofodds.com/games/let-it-ride/"
+              href="https://wizardofodds.com/games/mississippi-stud/"
               target="_blank"
-              >https://wizardofodds.com/games/let-it-ride/</a
+              >https://wizardofodds.com/games/mississippi-stud</a
             >. <br />
             Credit: Wizard of Odds website - thank you!
 

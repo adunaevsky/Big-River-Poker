@@ -64,7 +64,7 @@
           cardArea: cardNum > 4,
         }"
       >
-        <div v-if="r.payout > 0" class="mainCards">
+        <div v-if="r.payout > -1" class="mainCards">
           <div class="cSize" :class="[cPos[cardNum]]">
             <div style="padding-top: 0%; margin: 0 auto; cursor: pointer">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 130">
@@ -85,7 +85,7 @@
                   font-size="25"
                   class="winValueLabel"
                 >
-                  ${{ r.win }}
+                  {{r.payout === 0 ? 'PUSH' :'$' + r.win }}
                 </text>
               </svg>
             </div>
@@ -112,7 +112,7 @@
                   font-size="20"
                   class="winValueLabel"
                 >
-                 No Win
+                  No Win
                 </text>
               </svg>
             </div>
@@ -835,8 +835,9 @@ export default {
       );
     },
     payForPlay(n) {
-      this.cash.balance =
-        this.cash.balance - n * this.cash.coinValue * this.cash.hands;
+      var costToPlay = n * this.cash.coinValue * this.cash.hands;
+      this.cash.balance -= costToPlay;
+      this.cash.totalBet += costToPlay;
     },
     dealFinalCards() {
       //var cardsToFlip = [];
@@ -903,16 +904,12 @@ export default {
                     payout: 0,
                     fill: "#424242",
                   });
-                  if(i === 4){
-                    this.endRound()
+                  if (i === 4) {
+                    this.endRound();
                   }
                 }
               },
-              this.option.invisibleSim
-                ? 0
-                : this.option.turboSpeed
-                ? 30
-                : 300
+              this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300
             );
           }, initialDelay);
           initialDelay =
@@ -931,7 +928,7 @@ export default {
       var totalwin = 0;
 
       this.results.forEach((r) => {
-        if (r.payout > 0) {
+        if (r.payout > -1) {
           totalwin += r.win;
         }
       });
@@ -1042,17 +1039,16 @@ export default {
         cards.push(this.primaryCards.specs[j]);
       }
       var result = finalResults.fiveCards(cards);
-      if (result.payout > 0) {
+
+      if (result.payout > -1) {
         var betPerHandTotal = 0;
         this.cash.multiplyFactor.forEach((v) => {
           betPerHandTotal += v * this.cash.coinValue;
         });
-
-        result.win =
-          result.payout * betPerHandTotal * this.cash.coinValue +
-          betPerHandTotal * this.cash.coinValue;
-      }
-    //  console.log(result);
+        result.win = result.payout * betPerHandTotal + betPerHandTotal;
+        
+        //console.log(result.win);
+      } //  console.log(result);
       this.results.push(result);
 
       if (i === this.cash.hands - 1) {
@@ -1121,6 +1117,7 @@ export default {
       this.showWater2 = true;
 
       this.cash.win = 0;
+      this.cash.totalBet = 0;
       this.stage.fold = false;
     },
     flipPrimaryCards(initialDelay, cards, rideNum) {
