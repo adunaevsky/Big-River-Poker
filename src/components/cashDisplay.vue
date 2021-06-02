@@ -238,11 +238,11 @@ export default {
       if (this.cash.win > 0) {
         this.winDisplayed = 0;
         var cashCounter = setInterval(() => {
-          if (this.cash.win - this.winDisplayed >= 1000) {
-            this.winDisplayed = this.winDisplayed + 995;
+          if (this.cash.win - this.winDisplayed >= 2000) {
+            this.winDisplayed = this.winDisplayed + 1000;
           }
-          if (this.cash.win - this.winDisplayed >= 100) {
-            this.winDisplayed = this.winDisplayed + 95;
+          if (this.cash.win - this.winDisplayed >= 200) {
+            this.winDisplayed = this.winDisplayed + 100;
           }
           if (this.cash.win - this.winDisplayed >= 10) {
             this.winDisplayed = this.winDisplayed + 5;
@@ -250,10 +250,10 @@ export default {
           if (this.cash.win - this.winDisplayed >= 1) {
             this.winDisplayed++;
           }
-          if (this.cash.win - this.winDisplayed >= 0.5) {
+        /*   if (this.cash.win - this.winDisplayed >= 0.5) {
             this.winDisplayed += 0.5;
           }
-
+ */
           if (this.winDisplayed === this.cash.win) {
             /*      if (this.cash.win >= ((this.cash.coinValue * this.cash.playCost) + (this.cash.coinValue * this.cash.bonusCost))) {
               console.log('win??');

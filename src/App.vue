@@ -132,9 +132,12 @@
         <div class="topBtnBox">
           <btn-right
             v-on:play="mainBtn"
+            v-on:autoPlay="autoPlay"
             v-bind:specs="{
               clr: 'red',
               label: stage.newRound ? 'DEAL' : 'RIDE',
+              ride3: stage.ride3,
+              ride2: stage.ride2
             }"
           ></btn-right>
         </div>
@@ -612,6 +615,7 @@ export default {
         ride2: false,
         ride3: false,
         fold: false,
+        ride3All: false
       },
       /*  MDIndex: -1, */
       cash: {
@@ -758,6 +762,7 @@ export default {
       } else {
         this.cash.activeCoinOption++;
       }
+      this.cash.multiplyFactor =  [1, 0, 0, 0];
       this.playChipClick();
       this.cash.coinValue = this.cash.coinOptions[this.cash.activeCoinOption];
     },
@@ -787,6 +792,10 @@ export default {
     openInfoBox() {
       this.infoBoxOpen = true;
       document.getElementById("infoFrame").style.zIndex = "1";
+    },
+    autoPlay(){
+      this.stage.ride3All = true;
+      this.mainBtn(3)
     },
     mainBtn(multiplyFactor) {
       if (this.stage.newRound) {
@@ -1121,7 +1130,6 @@ export default {
 
       this.cash.win = 0;
       this.cash.totalBet = 0;
-      this.stage.fold = false;
     },
     flipPrimaryCards(initialDelay, cards, rideNum) {
       cards.forEach((c, i, a) => {
@@ -1172,8 +1180,14 @@ export default {
           this.stage.ride1 = true;
         } else if (rideNum === 2) {
           this.stage.ride2 = true;
+          if( this.stage.ride3All){
+             this.ride2(3);
+          }
         } else if (rideNum === 3) {
           this.stage.ride3 = true;
+            if( this.stage.ride3All){
+             this.ride3(3);
+          }
         } else {
           //end game!
 
