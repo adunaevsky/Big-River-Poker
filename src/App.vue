@@ -21,7 +21,7 @@
         v-bind:showValue="stage.results || stage.showWin"
         v-bind:lockBet="false"
       ></cash-display>
-<!--       <water-mark1
+      <!--       <water-mark1
         :style="{ display: showWater2 ? 'block' : 'none' }"
       ></water-mark1>
       <water-mark2
@@ -85,7 +85,7 @@
                   font-size="25"
                   class="winValueLabel"
                 >
-                  {{r.payout === 0 ? 'PUSH' : '$' + r.win }}
+                  {{ r.payout === 0 ? "PUSH" : "$" + r.win }}
                 </text>
               </svg>
             </div>
@@ -124,7 +124,8 @@
         class="topBtn"
         :style="{
           display:
-            stage.newRound || stage.ride1 || stage.ride2 || stage.ride3
+            (stage.newRound || stage.ride1 || stage.ride2 || stage.ride3) &&
+            stage.animationDone
               ? 'block'
               : 'none',
         }"
@@ -137,7 +138,7 @@
               clr: 'red',
               label: stage.newRound ? 'DEAL' : 'RIDE',
               ride3: stage.ride3,
-              ride2: stage.ride2
+              ride2: stage.ride2,
             }"
           ></btn-right>
         </div>
@@ -146,7 +147,10 @@
         id="fold"
         class="bottomBtn"
         :style="{
-          display: stage.ride1 || stage.ride2 || stage.ride3 ? 'block' : 'none',
+          display:
+            (stage.ride1 || stage.ride2 || stage.ride3) && stage.animationDone
+              ? 'block'
+              : 'none',
         }"
       >
         <div class="bottomBtnBox" v-on:click="fold">
@@ -615,7 +619,7 @@ export default {
         ride2: false,
         ride3: false,
         fold: false,
-        ride3All: false
+        ride3All: false,
       },
       /*  MDIndex: -1, */
       cash: {
@@ -682,9 +686,9 @@ export default {
   methods: {
     fold() {
       this.stage.fold = true;
+      this.stage.animationDone = false;
 
       if (this.stage.ride1) {
-        
         this.flipPrimaryCards(
           this.option.invisibleSim ? 0 : this.option.turboSpeed ? 30 : 300,
           [, , 2, 3, 4]
@@ -762,7 +766,7 @@ export default {
       } else {
         this.cash.activeCoinOption++;
       }
-      this.cash.multiplyFactor =  [1, 0, 0, 0];
+      this.cash.multiplyFactor = [1, 0, 0, 0];
       this.playChipClick();
       this.cash.coinValue = this.cash.coinOptions[this.cash.activeCoinOption];
     },
@@ -793,9 +797,9 @@ export default {
       this.infoBoxOpen = true;
       document.getElementById("infoFrame").style.zIndex = "1";
     },
-    autoPlay(){
+    autoPlay() {
       this.stage.ride3All = true;
-      this.mainBtn(3)
+      this.mainBtn(3);
     },
     mainBtn(multiplyFactor) {
       if (this.stage.newRound) {
@@ -935,20 +939,24 @@ export default {
       var totalwin = 0;
 
       this.results.forEach((r) => {
-       // console.log(r);
+        // console.log(r);
         if (r.payout > -1) {
           totalwin += r.win;
         }
       });
-      if(this.stage.fold){
+      if (this.stage.fold) {
         totalwin = 0;
       }
-//console.log(totalwin);
-
+      //console.log(totalwin);
+console.log('ending round???');
       this.stage.results = true;
       this.stage.newGame = true;
       this.stage.newRound = true;
       this.stage.roundEnds = true;
+      this.stage.animationDone = true;
+      this.stage.ride1 = false;
+      this.stage.ride2 = false;
+      this.stage.ride3 = false;
       this.cash.win = totalwin;
       this.cash.balance = this.cash.balance + totalwin;
       this.RTP.totalWin += totalwin;
@@ -1058,7 +1066,7 @@ export default {
           betPerHandTotal += v * this.cash.coinValue;
         });
         result.win = result.payout * betPerHandTotal + betPerHandTotal;
-        
+
         //console.log(result.win);
       } //  console.log(result);
       this.results.push(result);
@@ -1171,24 +1179,41 @@ export default {
       });
     },
     finishPrimaryCardFlip(rideNum) {
+      console.log('yo!');
+      
+         
       if (this.stage.fold) {
         //end game!
 
         this.startFinalCardsFlip();
+           console.log('case FOLD');
       } else {
         if (rideNum === 1) {
+           //  console.log('case 1');
           this.stage.ride1 = true;
+          
+            this.stage.animationDone = true;
         } else if (rideNum === 2) {
+           //  console.log('case 2');
           this.stage.ride2 = true;
-          if( this.stage.ride3All){
-             this.ride2(3);
+          
+            this.stage.animationDone = true;
+          if (this.stage.ride3All) {
+            this.ride2(3);
           }
         } else if (rideNum === 3) {
+          //   console.log('case 3');
           this.stage.ride3 = true;
-            if( this.stage.ride3All){
-             this.ride3(3);
+          
+            this.stage.animationDone = true;
+          if (this.stage.ride3All) {
+            this.ride3(3);
           }
+        //  console.log('animationDone',  this.stage.animationDone );
+         
         } else {
+        //  console.log('case 4');
+            this.stage.animationDone = true;
           //end game!
 
           this.startFinalCardsFlip();
