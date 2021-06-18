@@ -577,7 +577,7 @@ export default {
   data() {
     return {
       results: [],
-      gameOn: false,
+      gameOn: true,
       RTP: {
         totalWin: 0,
         totalBet: 0,
