@@ -38,6 +38,7 @@ export default {
     if (window.location.hostname === "localhost") {
       this.closeBox();
     }
+      this.closeBox();
   },
 };
 </script>

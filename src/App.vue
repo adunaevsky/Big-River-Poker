@@ -1179,14 +1179,12 @@ console.log('ending round???');
       });
     },
     finishPrimaryCardFlip(rideNum) {
-      console.log('yo!');
-      
-         
+
       if (this.stage.fold) {
         //end game!
 
         this.startFinalCardsFlip();
-           console.log('case FOLD');
+        
       } else {
         if (rideNum === 1) {
            //  console.log('case 1');
