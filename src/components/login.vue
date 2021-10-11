@@ -35,9 +35,9 @@ export default {
     },
   },
   mounted() {
-    if (window.location.hostname === "localhost") {
+  /*   if (window.location.hostname === "localhost") {
       this.closeBox();
-    }
+    } */
       this.closeBox();
   },
 };
