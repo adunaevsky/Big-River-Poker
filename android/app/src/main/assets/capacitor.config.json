@@ -1,0 +1,6 @@
+{
+	"appId": "com.realizegaming.bigriverpoker",
+	"appName": "river",
+	"webDir": "dist",
+	"bundledWebRuntime": false
+}
