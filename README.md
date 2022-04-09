@@ -1,4 +1,4 @@
-# lit
+# Big River Poker
 
 ## Project setup
 ```
