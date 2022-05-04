@@ -1,4 +1,4 @@
-# Big River Poker
+# Big River Poker Android App
 
 ## Project setup
 ```
