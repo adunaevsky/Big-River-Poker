@@ -1,6 +1,6 @@
 # Big River Poker Android App
 
-##Play the demo game
+## Play the demo game
 https://realizegamingllc.com/demo/bigRiver/
 
 ## Project setup
