@@ -1,5 +1,8 @@
 # Big River Poker Android App
 
+##Play the demo game
+https://realizegamingllc.com/demo/bigRiver/
+
 ## Project setup
 ```
 npm install
